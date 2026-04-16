@@ -1,0 +1,6 @@
+[tools]
+node = "22"
+
+[tasks.package]
+description = "Package the VS Code extension into a VSIX file"
+run = "npx @vscode/vsce package"

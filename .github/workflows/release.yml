@@ -1,0 +1,54 @@
+name: Release VS Code Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Sync package.json version to tag
+        env:
+          GIT_TAG: ${{ github.ref_name }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const tag = process.env.GIT_TAG;
+          const version = tag.startsWith('v') ? tag.slice(1) : tag;
+          if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(version)) {
+            throw new Error('Tag must be a semver value like v0.0.2');
+          }
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          packageJson.version = version;
+          fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2) + '\n');
+          console.log('Using extension version', version);
+          "
+
+      - name: Package VSIX
+        run: npx @vscode/vsce package
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: "*.vsix"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.vsix"
+          generate_release_notes: true

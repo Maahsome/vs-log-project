@@ -1,0 +1,69 @@
+{
+  "name": "obsidian-workspace-log",
+  "displayName": "Obsidian Workspace Log",
+  "description": "Create or append a dated Obsidian note with the current git status for the open workspace.",
+  "version": "0.0.2",
+  "publisher": "local",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maahsome/vs-log-project.git"
+  },
+  "homepage": "https://github.com/maahsome/vs-log-project",
+  "bugs": {
+    "url": "https://github.com/maahsome/vs-log-project/issues"
+  },
+  "files": [
+    "extension.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:obsidianWorkspaceLog.captureStatus"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "obsidianWorkspaceLog.captureStatus",
+        "title": "Obsidian Workspace Log: Capture Git Status"
+      }
+    ],
+    "configuration": {
+      "title": "Obsidian Workspace Log",
+      "properties": {
+        "obsidianWorkspaceLog.vaultPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to your Obsidian vault root. If empty, the extension will try to find a parent folder containing .obsidian."
+        },
+        "obsidianWorkspaceLog.notesFolder": {
+          "type": "string",
+          "default": "VSCode",
+          "description": "Folder inside the Obsidian vault where workspace log notes should be created."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "obsidianWorkspaceLog.captureStatus",
+        "key": "cmd+k n",
+        "mac": "cmd+k n",
+        "when": "workspaceFolderCount > 0"
+      },
+      {
+        "command": "obsidianWorkspaceLog.captureStatus",
+        "key": "ctrl+k n",
+        "linux": "ctrl+k n",
+        "win": "ctrl+k n",
+        "when": "workspaceFolderCount > 0"
+      }
+    ]
+  }
+}
